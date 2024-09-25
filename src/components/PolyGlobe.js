@@ -77,11 +77,15 @@ const PolyGlobe = () => {
   return (
     <div style={{ width: "100vw", height: "100vh", backgroundColor: "black" }}>
       {countries.length > 0 && (
-        <div className={animate ? 'globeAnimation' : ''}>
+        <div className={animate ? "globeAnimation" : ""}>
           <Globe
             globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
             hexPolygonsData={countries}
             backgroundColor="black"
+            camera={0.5}
+            options={{
+                ambientLightColor: 'red',
+              }}
             hexPolygonResolution={3}
             hexPolygonMargin={0.1}
             hexPolygonUseDots={true}
@@ -101,8 +105,10 @@ const PolyGlobe = () => {
               el.innerHTML = markerSvg;
               el.style.color = d.color;
               el.style.width = `${d.size}px`;
-              el.style.transform = `translate(-30%, -50%) translateZ(-${d.size / 2}px)`;
-              
+              el.style.transform = `translate(-30%, -50%) translateZ(-${
+                d.size / 2
+              }px)`;
+
               const tooltip = document.createElement("div");
               tooltip.innerText = d.name;
               tooltip.style.position = "absolute";
@@ -113,14 +119,14 @@ const PolyGlobe = () => {
               tooltip.style.transform = "translate(-50%, -100%)";
               tooltip.style.display = "none";
               el.appendChild(tooltip);
-              
+
               el.onmouseenter = () => {
                 tooltip.style.display = "block";
               };
               el.onmouseleave = () => {
                 tooltip.style.display = "none";
               };
-              
+
               el.style["pointer-events"] = "auto";
               el.style.cursor = "pointer";
               el.onclick = () => handleShowInfor(d.name);

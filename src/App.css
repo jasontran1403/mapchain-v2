@@ -1,17 +1,16 @@
 
-/* PolyGlobe.css */
 @keyframes moveAndResize {
   0% {
     transform: translateX(0) scale(1);
   }
   100% {
-    transform: translateX(-400px) scale(0.7); /* Move left and resize to 20% */
+    transform: translate(-70px, 220px) scale(0.5); /* Move left and resize to 70% */
   }
 }
 
 @keyframes returnToOriginal {
   0% {
-    transform: translateX(-400px) scale(0.7); /* Start from the moved position */
+    transform: translate(-70px, 220px) scale(0.5); /* Move left and resize to 70% */
   }
   100% {
     transform: translateX(0) scale(1); /* Return to original position and size */
@@ -24,4 +23,17 @@
 
 .globeAnimation.return {
   animation: returnToOriginal 1.5s forwards; /* Animation to return to original */
+}
+
+/* Media Query for mobile devices */
+@media screen and (max-width: 400px) {
+  .globeAnimation {
+    transform: scale(0.4); /* Scale to 40% on mobile */
+  }
+}
+
+@media screen and (min-width: 401px) {
+  .globeAnimation {
+    transform: scale(0.3); /* Scale to 30% on larger screens */
+  }
 }
