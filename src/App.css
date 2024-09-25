@@ -1,16 +1,38 @@
-
-@keyframes moveAndResize {
+.App {
+  width: 100svw;
+  height: 100svh;
+  background-color: black;
+}
+@keyframes moveAndResizeMobile {
   0% {
     transform: translateX(0) scale(1);
   }
   100% {
-    transform: translate(-70px, 220px) scale(0.5); /* Move left and resize to 70% */
+    transform: translate(-50px, -150px) scale(0.7); /* Move left and resize to 70% */
   }
 }
 
-@keyframes returnToOriginal {
+@keyframes returnToOriginalMobile {
   0% {
-    transform: translate(-70px, 220px) scale(0.5); /* Move left and resize to 70% */
+    transform: translate(-50px, -150px) scale(0.7); /* Move left and resize to 70% */
+  }
+  100% {
+    transform: translateX(0) scale(1); /* Return to original position and size */
+  }
+}
+
+@keyframes moveAndResizeDesktop {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    transform: translateX(-500px) scale(0.7); /* Move left and resize to 50% */
+  }
+}
+
+@keyframes returnToOriginalDesktop {
+  0% {
+    transform: translateX(-500px) scale(0.7); /* Move left and resize to 50% */
   }
   100% {
     transform: translateX(0) scale(1); /* Return to original position and size */
@@ -28,12 +50,12 @@
 /* Media Query for mobile devices */
 @media screen and (max-width: 400px) {
   .globeAnimation {
-    transform: scale(0.4); /* Scale to 40% on mobile */
+    animation: moveAndResizeMobile 1.5s forwards; /* Use mobile animation */
   }
 }
 
 @media screen and (min-width: 401px) {
   .globeAnimation {
-    transform: scale(0.3); /* Scale to 30% on larger screens */
+    animation: moveAndResizeDesktop 1.5s forwards; /* Use desktop animation */
   }
 }

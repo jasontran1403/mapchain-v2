@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Globe from "react-globe.gl";
 import data from "../assets/data.geojson"; // Import the geojson file
 
@@ -25,7 +25,29 @@ const PolyGlobe = () => {
   const [latArray, setLatArray] = useState([]);
   const [lngArray, setLngArray] = useState([]);
   const [animate, setAnimate] = useState(false); // State for animation
+  const globeEl = useRef();
   const N = 15;
+
+  useEffect(() => {
+    let to;
+    (function check() {
+      if (globeEl.current) {
+        globeEl.current.controls().autoRotate = true;
+        globeEl.current.controls().autoRotateSpeed = 2;
+
+        // Set altitude based on screen width
+        const altitude = window.innerWidth <= 768 ? 4 : 3; // Adjust altitude based on screen width
+        globeEl.current.pointOfView({ lat: 0, lng: 0, altitude });
+      } else {
+        to = setTimeout(check, 1000);
+      }
+    })();
+    return () => {
+      if (to) {
+        clearTimeout(to);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Load the countries data
@@ -57,9 +79,24 @@ const PolyGlobe = () => {
     name: cities[index].name,
   }));
 
-  const handleShowInfor = (cityName) => {
+  const handleShowInfor = (cityName, pointLat, pointLng) => {
     console.log(`City: ${cityName}`);
-    // Toggle animation state
+    if (globeEl.current) {
+      const altitude = window.innerWidth <= 768 ? 4 : 3; // Set altitude based on screen width
+  
+      if (!animate) {
+        globeEl.current.controls().autoRotate = false;
+        globeEl.current.pointOfView({
+          lat: pointLat,
+          lng: pointLng,
+          altitude: altitude, // Use the dynamic altitude here
+        });
+      } else {
+        globeEl.current.controls().autoRotate = true;
+        globeEl.current.controls().autoRotateSpeed = 2;
+      }
+    }
+  
     setAnimate((prev) => !prev);
   };
 
@@ -75,66 +112,60 @@ const PolyGlobe = () => {
   }));
 
   return (
-    <div style={{ width: "100vw", height: "100vh", backgroundColor: "black" }}>
-      {countries.length > 0 && (
-        <div className={animate ? "globeAnimation" : ""}>
-          <Globe
-            globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-            hexPolygonsData={countries}
-            backgroundColor="black"
-            camera={0.5}
-            options={{
-                ambientLightColor: 'red',
-              }}
-            hexPolygonResolution={3}
-            hexPolygonMargin={0.1}
-            hexPolygonUseDots={true}
-            hexPolygonColor={() =>
-              `#${Math.round(Math.random() * Math.pow(2, 24))
-                .toString(16)
-                .padStart(6, "0")}`
-            }
-            htmlElementsData={gData}
-            arcsData={arcsData}
-            arcColor={"color"}
-            arcDashLength={() => Math.random()}
-            arcDashGap={() => Math.random()}
-            arcDashAnimateTime={() => Math.random() * 4000 + 500}
-            htmlElement={(d) => {
-              const el = document.createElement("div");
-              el.innerHTML = markerSvg;
-              el.style.color = d.color;
-              el.style.width = `${d.size}px`;
-              el.style.transform = `translate(-30%, -50%) translateZ(-${
-                d.size / 2
-              }px)`;
+    <div className={animate ? "globeAnimation" : ""}>
+      <Globe
+        ref={globeEl}
+        globeImageUrl="https://unpkg.com/three-globe@2.18.0/example/img/earth-blue-marble.jpg"
+        bumpImageUrl="https://unpkg.com/three-globe@2.18.0/example/img/earth-topology.png"
+        hexPolygonsData={countries}
+        backgroundColor="black"
+        hexPolygonResolution={3}
+        hexPolygonMargin={0.1}
+        hexPolygonUseDots={true}
+        hexPolygonColor={() =>
+          `#${Math.round(Math.random() * Math.pow(2, 24))
+            .toString(16)
+            .padStart(6, "0")}`
+        }
+        htmlElementsData={gData}
+        arcsData={arcsData}
+        arcColor={"color"}
+        arcDashLength={() => Math.random()}
+        arcDashGap={() => Math.random()}
+        arcDashAnimateTime={() => Math.random() * 4000 + 500}
+        htmlElement={(d) => {
+          const el = document.createElement("div");
+          el.innerHTML = markerSvg;
+          el.style.color = d.color;
+          el.style.width = `${d.size}px`;
+          el.style.transform = `translate(-30%, -50%) translateZ(-${
+            d.size / 2
+          }px)`;
 
-              const tooltip = document.createElement("div");
-              tooltip.innerText = d.name;
-              tooltip.style.position = "absolute";
-              tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-              tooltip.style.color = "white";
-              tooltip.style.borderRadius = "4px";
-              tooltip.style.padding = "5px";
-              tooltip.style.transform = "translate(-50%, -100%)";
-              tooltip.style.display = "none";
-              el.appendChild(tooltip);
+          const tooltip = document.createElement("div");
+          tooltip.innerText = d.name;
+          tooltip.style.position = "absolute";
+          tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+          tooltip.style.color = "white";
+          tooltip.style.borderRadius = "4px";
+          tooltip.style.padding = "5px";
+          tooltip.style.transform = "translate(-50%, -100%)";
+          tooltip.style.display = "none";
+          el.appendChild(tooltip);
 
-              el.onmouseenter = () => {
-                tooltip.style.display = "block";
-              };
-              el.onmouseleave = () => {
-                tooltip.style.display = "none";
-              };
+          el.onmouseenter = () => {
+            tooltip.style.display = "block";
+          };
+          el.onmouseleave = () => {
+            tooltip.style.display = "none";
+          };
 
-              el.style["pointer-events"] = "auto";
-              el.style.cursor = "pointer";
-              el.onclick = () => handleShowInfor(d.name);
-              return el;
-            }}
-          />
-        </div>
-      )}
+          el.style["pointer-events"] = "auto";
+          el.style.cursor = "pointer";
+          el.onclick = () => handleShowInfor(d.name, d.lat, d.lng);
+          return el;
+        }}
+      />
     </div>
   );
 };
