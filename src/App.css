@@ -48,13 +48,13 @@
 }
 
 /* Media Query for mobile devices */
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 600px) {
   .globeAnimation {
     animation: moveAndResizeMobile 1.5s forwards; /* Use mobile animation */
   }
 }
 
-@media screen and (min-width: 401px) {
+@media screen and (min-width: 601px) {
   .globeAnimation {
     animation: moveAndResizeDesktop 1.5s forwards; /* Use desktop animation */
   }
