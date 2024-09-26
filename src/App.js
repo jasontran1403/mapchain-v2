@@ -27,22 +27,28 @@ const CloseButton = styled.svg`
 
 function App() {
   const [isOpen, toggle] = useState(false);
-  const [animate, setAnimate] = useState(false); // State for animation
+  const [animation, setAnimation] = useState(false);
+  const [rorateSpeed, setRotateSpeed] = useState(2);
 
   function handleOpenModal(open) {
-    if (open === false) {
-      handleAnimation();
+    if (open) {
+      setAnimation(true);
+      setRotateSpeed(0);
+    } else {
+      setAnimation(false);
+      setRotateSpeed(2);
     }
+    
     toggle(open);
   }
 
   const handleAnimation = () => {
-    setAnimate((prev) => !prev);
+    setAnimation((prev) => !prev);
   }
 
   return (
     <div className="App">
-      <PolyGlobe handleOpenModal={handleOpenModal} handleAnimation={handleAnimation} animate={animate} />
+      <PolyGlobe handleOpenModal={handleOpenModal} handleAnimation={handleAnimation} animate={animation} rorateSpeed={rorateSpeed} />
       <div className="modal-container">
         <Modal isOpen={isOpen}>
           <ModalContent>

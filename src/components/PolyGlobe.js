@@ -20,20 +20,19 @@ const cities = [
   { name: "Jakarta", lat: -6.208763, lng: 106.845599 },
 ];
 
-
-const PolyGlobe = ({ handleOpenModal, handleAnimation, animate }) => {
+const PolyGlobe = ({ handleOpenModal, animate, rorateSpeed }) => {
   const [countries, setCountries] = useState([]);
   const [latArray, setLatArray] = useState([]);
   const [lngArray, setLngArray] = useState([]);
   const globeEl = useRef();
   const N = 15;
-  
+
   useEffect(() => {
     let to;
     (function check() {
       if (globeEl.current) {
         globeEl.current.controls().autoRotate = true;
-        globeEl.current.controls().autoRotateSpeed = 2;
+        globeEl.current.controls().autoRotateSpeed = rorateSpeed;
 
         // Set altitude based on screen width
         const altitude = window.innerWidth <= 768 ? 4 : 3; // Adjust altitude based on screen width
@@ -80,29 +79,22 @@ const PolyGlobe = ({ handleOpenModal, handleAnimation, animate }) => {
   }));
 
   const handleShowInfor = (cityName, pointLat, pointLng) => {
-    console.log(`City: ${cityName}`);
     if (globeEl.current) {
       const altitude = window.innerWidth <= 768 ? 4 : 3; // Set altitude based on screen width
-  
+
+      globeEl.current.controls().autoRotate = true;
+      globeEl.current.controls().autoRotateSpeed = rorateSpeed;
       if (!animate) {
-        globeEl.current.controls().autoRotate = false;
         globeEl.current.pointOfView({
           lat: pointLat,
           lng: pointLng,
           altitude: altitude, // Use the dynamic altitude here
         });
-      } else {
-        globeEl.current.controls().autoRotate = true;
-        globeEl.current.controls().autoRotateSpeed = 2;
       }
     }
-  
-    handleAnimation();
-    
+
     handleOpenModal(true);
   };
-
-  
 
   const arcsData = [...Array(15 - 1).keys()].map((i) => ({
     startLat: latArray[i],
