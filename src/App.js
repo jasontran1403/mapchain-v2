@@ -1,17 +1,85 @@
-import logo from './logo.svg';
-import './App.css';
-import GlobeComponent from './components/GlobeComponent';
-import PolyGlobe from './components/PolyGlobe';
-import Animation from './components/Animation';
+import React, { useState } from "react";
+import "./App.css";
+import PolyGlobe from "./components/PolyGlobe";
+import Modal from "./components/Modal";
+import styled from "styled-components";
+
+const ModalContent = styled.div`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  h1 {
+    color: #5c3aff;
+  }
+`;
+
+const CloseButton = styled.svg`
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  cursor: pointer;
+`;
 
 function App() {
+  const [isOpen, toggle] = useState(false);
+  const [animate, setAnimate] = useState(false); // State for animation
+
+  function handleOpenModal(open) {
+    if (open === false) {
+      handleAnimation();
+    }
+    toggle(open);
+  }
+
+  const handleAnimation = () => {
+    setAnimate((prev) => !prev);
+  }
+
   return (
     <div className="App">
-      {/* <GlobeComponent /> */}
-      <PolyGlobe />
-      {/* <Animation /> */}
+      <PolyGlobe handleOpenModal={handleOpenModal} handleAnimation={handleAnimation} animate={animate} />
+      <div className="modal-container">
+        <Modal isOpen={isOpen}>
+          <ModalContent>
+          <CloseButton
+              onClick={(e) => handleOpenModal(false)}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20.39 20.39"
+            >
+              <title>X</title>
+              <line
+                x1="19.39"
+                y1="19.39"
+                x2="1"
+                y2="1"
+                fill="none"
+                stroke="#5c3aff"
+                strokeLinecap="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+              <line
+                x1="1"
+                y1="19.39"
+                x2="19.39"
+                y2="1"
+                fill="none"
+                stroke="#5c3aff"
+                strokeLinecap="round"
+                strokeMiterlimit="10"
+                strokeWidth="2"
+              />
+            </CloseButton>
+            <h1>Awesome modal</h1>
+          </ModalContent>
+        </Modal>
+      </div>
     </div>
-    
   );
 }
 

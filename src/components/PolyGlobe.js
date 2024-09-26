@@ -20,14 +20,14 @@ const cities = [
   { name: "Jakarta", lat: -6.208763, lng: 106.845599 },
 ];
 
-const PolyGlobe = () => {
+
+const PolyGlobe = ({ handleOpenModal, handleAnimation, animate }) => {
   const [countries, setCountries] = useState([]);
   const [latArray, setLatArray] = useState([]);
   const [lngArray, setLngArray] = useState([]);
-  const [animate, setAnimate] = useState(false); // State for animation
   const globeEl = useRef();
   const N = 15;
-
+  
   useEffect(() => {
     let to;
     (function check() {
@@ -97,8 +97,12 @@ const PolyGlobe = () => {
       }
     }
   
-    setAnimate((prev) => !prev);
+    handleAnimation();
+    
+    handleOpenModal(true);
   };
+
+  
 
   const arcsData = [...Array(15 - 1).keys()].map((i) => ({
     startLat: latArray[i],
